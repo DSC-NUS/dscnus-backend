@@ -4,7 +4,7 @@ const router = new express.Router()
 const Article = require('../models/article')
 const auth = require('../middleware/auth')
 
-router.post('/articles', async (req, res) => {
+router.post('/articles', cors(), async (req, res) => {
     const article = new Article({
         ...req.body
     })
@@ -36,7 +36,7 @@ router.get('/articles', cors(), async (req, res) => {
     }
 })
 
-router.get('/articles/:id', async (req, res) => {
+router.get('/articles/:id', cors(), async (req, res) => {
     const _id = req.params.id
     try {
         const article = await Article.findById(_id)
@@ -50,7 +50,7 @@ router.get('/articles/:id', async (req, res) => {
     }
 })
 
-router.patch('/articles/:id', async (req, res) => {
+router.patch('/articles/:id', cors(), async (req, res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ['title', 'description', 'body']
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
@@ -72,7 +72,7 @@ router.patch('/articles/:id', async (req, res) => {
     }
 })
 
-router.delete('/articles/:id', async (req, res) => {
+router.delete('/articles/:id', cors(), async (req, res) => {
     try {
         const article = await Article.findByIdAndDelete(req.params.id)
         if (!article) {

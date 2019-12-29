@@ -12,5 +12,5 @@ app.use(articleRouter)
 app.use(emailRouter)
 
 app.listen(port, () => {
-    console.log('Server is up')
+    console.log('Server is up on port ' + process.env.PORT)
 })
