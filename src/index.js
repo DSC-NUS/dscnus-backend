@@ -18,7 +18,3 @@ app.use(emailRouter)
 app.listen(port, () => {
     console.log('Server is up on port ' + port)
 })
-
-app.get('/', function(req, res){
-    res.redirect('/articles');
-});
