@@ -1,24 +1,25 @@
 const express = require('express')
 const nodemailer = require('nodemailer')
+const cors = require('cors')
 const router = new express.Router()
 
-router.post('/send', (req, res) => {
+router.post('/send', (req, res, next) => {
     if(req.body.email == "" || req.body.message == "") {
-        console.log("email and subject error")
+        // console.log("email and subject error")
         return res.status(400).send("Error: Email & Subject should not be blank");
     }
 
     var smtpTransport = nodemailer.createTransport({
-        // service: 'Gmail',
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
+        service: 'gmail',
+        // host: 'smtp.gmail.com',
+        // port: 465,
+        // secure: true,
         auth: {
-            user: '',
-            pass: ''
+            user: process.env.GMAIL_EMAIL,
+            pass: process.env.GMAIL_PASSWORD
         }
     })
-    console.log(smtpTransport)
+    console.log("transport: " + smtpTransport)
 
     var mailOptions = {
         from: 'tansuyee.dscnus@gmail.com',
@@ -27,14 +28,14 @@ router.post('/send', (req, res) => {
         text:  req.body.email + ' ' + req.body.firstname + ' ' + req.body.lastname + ': ' + req.body.message
     }
 
-    console.log(mailOptions)
+    console.log("mailOptions: " + mailOptions)
 
     smtpTransport.sendMail(mailOptions, (e, res) => {
         if (e) {
-            console.log(e)
             res.status(400).send({ error });
         } else {
             res.send({ success: true });
+            next()
         }
     })
 })
