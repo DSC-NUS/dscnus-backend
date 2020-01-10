@@ -1,25 +1,26 @@
 const express = require('express')
-const cors = require('cors')
 const router = new express.Router()
 const Article = require('../models/article')
-const auth = require('../middleware/auth')
+// const auth = require('../middleware/auth')
 
 router.post('/articles', async (req, res) => {
     const article = new Article({
         ...req.body
     })
     try {
-        await article.save()
-        res.status(201).send(article)
+        const isMatch = req.body.password === process.env.ARTICLE_PASSWORD
+        if (isMatch) {
+            await article.save()
+            res.status(201).send(article)
+        } else {
+            throw new Error('Wrong password')
+        }
     } catch (e) {
         res.status(400).send()
     }
 })
 
 router.get('/articles', async (req, res) => {
-    // const match = {}
-    const sort = {}
-
     try {
         if (req.query.sortBy) {
             const parts = req.query.sortBy.split(':')
